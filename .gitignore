@@ -15,6 +15,9 @@ ENV/
 .ipynb_checkpoints/
 *.ipynb
 
+# Downloaded model weights (fetched from Hugging Face at runtime)
+*.pth
+
 # Local application state
 .gradio/
 __pycache__/

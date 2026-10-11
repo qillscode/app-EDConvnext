@@ -1,18 +1,17 @@
 """Aplikasi Streamlit untuk deteksi emosi wajah dengan ConvNeXt Tiny."""
 
-from pathlib import Path
-
 import cv2
 import numpy as np
 import streamlit as st
 import timm
 import torch
+from huggingface_hub import hf_hub_download
 from PIL import Image
 from torchvision import transforms
 
 
-BASE_DIR = Path(__file__).resolve().parent
-WEIGHTS_PATH = BASE_DIR / "convnext_ferplus_statedict.pth"
+MODEL_REPO_ID = "qillscode/convnext-ferplus"
+MODEL_FILENAME = "convnext_ferplus_statedict.pth"
 CLASS_NAMES = [
 	"neutral", "happiness", "surprise", "sadness",
 	"anger", "disgust", "fear", "contempt",
@@ -70,11 +69,13 @@ st.markdown(
 
 @st.cache_resource(show_spinner="Memuat model ConvNeXt Tiny...")
 def load_model():
-	if not WEIGHTS_PATH.exists():
-		raise FileNotFoundError(f"File model tidak ditemukan: {WEIGHTS_PATH.name}")
 	device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	model = timm.create_model("convnext_tiny", pretrained=False, num_classes=len(CLASS_NAMES))
-	state = torch.load(WEIGHTS_PATH, map_location="cpu")
+	model_path = hf_hub_download(
+		repo_id=MODEL_REPO_ID,
+		filename=MODEL_FILENAME,
+	)
+	state = torch.load(model_path, map_location="cpu")
 	if isinstance(state, dict) and "state_dict" in state:
 		state = state["state_dict"]
 	if isinstance(state, dict) and "model_state_dict" in state:
