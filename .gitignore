@@ -15,12 +15,6 @@ ENV/
 .ipynb_checkpoints/
 *.ipynb
 
-# Model checkpoints and generated weights
-*.pth
-*.pt
-*.ckpt
-*.onnx
-
 # Local application state
 .gradio/
 __pycache__/
